@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<p>
+      <a class="btn" href="{{ url_for('admin_events') }}">Manage Events</a>
+      <a class="btn" href="{{ url_for('admin_users') }}">Manage Users</a>
+      <a class="btn" href="{{ url_for('stats_page') }}">Stats & Activity</a>
+</p>
+
+<h3>Recent Bookings</h3>
+
+<div class="table-responsive-wrapper">
+<table class="table">
+<tr>
+    <th>ID</th>
+    <th>User</th>
+    <th>Event</th>
+    <th>Date</th>
+    <th>Event Status</th>
+    <th>Paid</th>
+    <th>Payment Ref</th>
+    <th>Status</th>
+    <th>Actions</th>
+</tr>
+
+{% for b in bookings %}
+<tr>
+<td>{{ b.id }}</td>
+<td>{{ b.user.email }}</td>
+<td>{{ b.event.name }}</td>
+<td>{{ b.date }}</td>
+
+<td>
+{% if b.status == 'Approved' %}
+    {% if b.is_upcoming %}
+        <span style="color: blue; font-weight: bold;">Upcoming</span>
+    {% else %}
+        <span style="color: gray;">Completed</span>
+    {% endif %}
+{% else %}
+    <span style="color: black;">---</span>
+{% endif %}
+</td>
+
+<!-- ★ Updated PAID Column -->
+<td>
+    {% if b.status == 'Rejected'%}
+        <span style="color: orange;">Refunded</span>
+    {% else %}
+        {{ 'Yes' if b.paid else 'No' }}
+    {% endif %}
+</td>
+
+<td>{{ b.payment_reference or '-' }}</td>
+
+<td>
+    {% if b.status == 'Approved' %}
+        <span class="badge bg-success">Approved</span>
+    {% elif b.status == 'Rejected' %}
+        <span class="badge bg-danger" style="color: red;">Rejected</span>
+    {% else %}
+        <span class="badge bg-secondary">Pending</span>
+    {% endif %}
+</td>
+
+<!-- ★ Updated ACTIONS Column -->
+<td>
+    {% if b.status == 'Rejected' %}
+        <span style="color: orange;">Refunded</span>
+
+    {% elif not b.paid %}
+        <span style="color:#888">Awaiting payment</span>
+
+    {% elif b.paid and b.status != 'Approved' %}
+        <a class="btn" href="{{ url_for('admin_approve', booking_id=b.id) }}">Approve</a>
+        <a class="btn btn-ghost" href="{{ url_for('admin_reject', booking_id=b.id) }}">Reject</a>
+
+    {% else %}
+        <span>Approved</span>
+    {% endif %}
+</td>
+
+</tr>
+{% else %}
+<tr>
+    <td colspan="9">No bookings yet.</td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+{% endblock %}

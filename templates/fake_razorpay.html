@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="checkout-container">
+  <div class="card checkout-card">
+    
+    <div class="checkout-header">
+      <h3>Checkout</h3>
+      <div class="amount-tag">₹{{ '%.2f'|format(booking.event.price) }}</div>
+    </div>
+
+    <div class="order-summary">
+      <p><strong>Booking ID:</strong> #{{ booking.id }}</p>
+      <p><strong>Event:</strong> {{ booking.event.name }}</p>
+    </div>
+
+    <hr class="divider">
+
+    <form method="post" action="{{ url_for('payment_complete') }}" id="payment-form">
+      <input type="hidden" name="booking_id" value="{{ booking.id }}">
+      
+      <p class="label-text">Select Payment Method:</p>
+      <div class="payment-tabs">
+          <label class="tab-option">
+              <input type="radio" name="payment_method" value="card" checked onchange="togglePayment('card')"> 
+              <span>💳 Card</span>
+          </label>
+          <label class="tab-option">
+              <input type="radio" name="payment_method" value="netbanking" onchange="togglePayment('netbanking')"> 
+              <span>🏦 NetBanking</span>
+          </label>
+          <label class="tab-option">
+              <input type="radio" name="payment_method" value="upi" onchange="togglePayment('upi')"> 
+              <span>📱 UPI</span>
+          </label>
+      </div>
+
+      <div id="card-section" class="payment-section">
+          <div class="input-group">
+            <label>Card Number</label>
+            <input type="text" class="styled-input card-input" placeholder="0000 0000 0000 0000" maxlength="19">
+            <div class="icon">💳</div>
+          </div>
+          
+          <div class="row">
+            <div class="input-group">
+                <label>Expiry Date</label>
+                <input type="text" class="styled-input" placeholder="MM / YY" maxlength="5">
+            </div>
+            <div class="input-group">
+                <label>CVV</label>
+                <input type="password" class="styled-input" placeholder="123" maxlength="3">
+                <div class="icon">🔒</div>
+            </div>
+          </div>
+      </div>
+
+      <div id="netbanking-section" class="payment-section" style="display: none;">
+          <div class="input-group">
+            <label>Select Bank</label>
+            <div class="select-wrapper">
+                <select class="styled-input">
+                    <option>HDFC Bank</option>
+                    <option>SBI</option>
+                    <option>ICICI Bank</option>
+                    <option>Axis Bank</option>
+                    <option>Kotak Mahindra</option>
+                </select>
+                <span class="arrow">▼</span>
+            </div>
+          </div>
+          <p class="helper-text">You will be redirected to your bank's secure login page.</p>
+      </div>
+
+      <div id="upi-section" class="payment-section" style="display: none;">
+          <div class="input-group">
+            <label>Enter UPI ID</label>
+            <input type="text" class="styled-input" placeholder="mobile@upi">
+          </div>
+          <p class="helper-text">Open your UPI app to approve the payment request.</p>
+      </div>
+
+      <button class="btn pay-btn" type="submit">
+        Pay ₹{{ '%.2f'|format(booking.event.price) }}
+      </button>
+    </form>
+  </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+    function togglePayment(method) {
+        document.querySelectorAll('.payment-section').forEach(el => el.style.display = 'none');
+        document.getElementById(method + '-section').style.display = 'block';
+        
+        // Update active styling on tabs
+        document.querySelectorAll('.tab-option').forEach(label => {
+            label.classList.remove('active-tab');
+            if(label.querySelector('input').checked) {
+                label.classList.add('active-tab');
+            }
+        });
+    }
+    // Initialize active tab styling
+    togglePayment('card');
+</script>
+
+<style>
+  *{
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+    cursor: pointer;
+}
+    /* Container & Card Tweaks */
+    .checkout-container {
+        display: flex;
+        justify-content: center;
+        padding-top: 20px;
+    }
+    .checkout-card {
+        max-width: 450px;
+        width: 100%;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        background: #ffffff;
+    }
+
+    /* Header */
+    .checkout-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .checkout-header h3 {
+        margin: 0;
+        color: var(--primary);
+        font-size: 1.5rem;
+    }
+    .amount-tag {
+        background: var(--success-bg);
+        color: var(--success-text);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+    .order-summary p {
+        margin: 5px 0;
+        font-size: 0.95rem;
+        color: #555;
+    }
+    .divider {
+        border: 0;
+        border-top: 1px solid #eee;
+        margin: 20px 0;
+    }
+
+    /* Payment Tabs (Radio Buttons) */
+    .label-text {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    .payment-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    .tab-option {
+        flex: 1;
+        text-align: center;
+        background: #f4f4f4;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        border: 1px solid transparent;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #555;
+    }
+    /* Hide actual radio circle */
+    .tab-option input {
+        display: none;
+    }
+    .tab-option:hover {
+        background: #e9ecef;
+    }
+    /* Style for when a tab is selected */
+    .tab-option.active-tab {
+        background: var(--primary-light);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Input Fields Design */
+    .payment-section {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    .row {
+        display: flex;
+        gap: 15px;
+    }
+    .input-group {
+        margin-bottom: 15px;
+        position: relative;
+        flex: 1;
+    }
+    .input-group label {
+        display: block;
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+    .styled-input {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fafafa;
+        transition: all 0.3s ease;
+        box-sizing: border-box; /* Crucial for padding */
+    }
+    .card-input {
+        letter-spacing: 1.5px; /* Space out card numbers */
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+    }
+    .styled-input:focus {
+        border-color: var(--primary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(91, 44, 111, 0.1); /* Glow effect using your primary color */
+        outline: none;
+    }
+    
+    /* Icons inside inputs */
+    .input-group .icon {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        color: #aaa;
+        pointer-events: none;
+    }
+
+    /* Select Dropdown Styling */
+    .select-wrapper {
+        position: relative;
+    }
+    .select-wrapper .arrow {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        color: #555;
+        pointer-events: none;
+    }
+    .select-wrapper select {
+        appearance: none; /* Remove default arrow */
+        cursor: pointer;
+    }
+
+    /* Pay Button */
+    .pay-btn {
+        width: 100%;
+        padding: 14px;
+        font-size: 1.1rem;
+        margin-top: 10px;
+        background: var(--primary); 
+        box-shadow: 0 4px 12px rgba(91, 44, 111, 0.3);
+    }
+    .pay-btn:hover {
+        background: var(--primary-light);
+        transform: translateY(-2px);
+        color: whitesmoke;
+    }
+
+    .helper-text {
+        font-size: 0.85rem;
+        color: #888;
+        margin-top: -5px;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Dashboard</h2>
+
+<div style="margin-bottom: 20px;">
+    <a class="btn" href="{{ url_for('home') }}">Browse Events</a>
+    <a class="btn" href="{{ url_for('profile') }}" style="margin-left: 10px;">Edit Profile</a>
+</div>
+<h3>Your Bookings</h3>
+<div class="table-responsive-wrapper">
+<table class="table">
+  <tr><th>ID</th><th>Event</th><th>Date</th><th>Venue</th><th>Price</th><th>Paid</th><th>Event Status</th><th>Response</th><th>Payment Status</th><th>Invoice</th></tr>
+  {% for b in bookings %}
+    <tr>
+      <td>{{ b.id }}</td>
+      <td>{{ b.event.name }}</td>
+      <td>{{ b.date }}</td>
+      <td>{{ b.venue }}</td>
+      <td>₹{{ '%.2f'|format(b.event.price) }}</td>
+      <td>
+        {% if b.status == 'Rejected' %}
+            ---
+        {% else %}
+            {{ 'Yes' if b.paid else 'No' }}
+        {% endif %}
+    </td>
+
+      <td>
+        {% if b.status == 'Approved' %}
+        {% if b.is_upcoming %}
+        <span style="color: blue; font-weight: bold;">Upcoming</span>
+        {% else %}
+        <span style="color: gray;">Completed</span>
+        {% endif %}
+        {% else %}
+        <span style="color: black;">---</span>
+        {% endif %}
+      </td>
+
+      <td>
+        {% if b.status == 'Approved' %}
+            <span class="badge bg-success">Approved</span>
+        {% elif b.status == 'Rejected' %}
+            <span class="badge bg-danger" style="color: red;">Rejected</span>
+        {% else %}
+            <span class="badge bg-secondary">Pending</span>
+        {% endif %}
+      </td>
+
+      <td>
+        {% if b.status == 'Rejected' %}
+            <span style="color: orange;">Refunded</span>
+
+        {% elif not b.paid %}
+            <a class="btn" href="{{ url_for('pay', booking_id=b.id) }}">Pay</a>
+
+        {% else %}
+            <span style="color: green;">Paid</span>
+        {% endif %}
+      </td>
+
+
+      <td>
+        {% if b.status == 'Approved' %}
+        <a href="{{ url_for('download_receipt', booking_id=b.id) }}" 
+           class="btn">
+           Download
+        </a>
+        {% elif b.paid %}
+            <span style="color: gray; font-size: 0.9rem;">Pending Approval</span>
+        {% else %}
+            <span style="color: #ddd;">-</span>
+        {% endif %}
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="9">No bookings yet.</td></tr> 
+  {% endfor %}
+</table>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+{% endblock %}

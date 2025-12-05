@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">Manage Users</h2>
+        <h5 class="badge bg-success p-3 fs-6">
+            Total Users: {{ total_users }}
+        </h5>
+    </div>
+
+        <form method="GET" class="search-form">
+
+        <!-- Search Box -->
+        <input type="text" name="search" placeholder="Search by name or email"
+            value="{{ search }}" style="flex: 1;">
+
+        <!-- Date Filters -->
+        <div class="date-filters">
+            <label>From:</label>
+            <input type="date" name="date_from" value="{{ date_from }}">
+
+            <label>To:</label>
+            <input type="date" name="date_to" value="{{ date_to }}">
+        </div>
+
+        <button class="btn">Apply</button>
+        <a href="{{ url_for('admin_users') }}" class="btn">Reset</a>
+    </form>
+
+    
+<br>
+<br>
+        <div class="table-responsive-wrapper">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Total Bookings</th>
+                        <th>Registered On</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>{{ u.id }}</td>
+                        <td>{{ u.name }}</td>
+                        <td>{{ u.email }}</td>
+
+                        <td>{{ u.bookings|length }}</td>
+
+                        <td>{{ u.created_at.strftime("%Y-%m-%d") }}</td>
+
+                    </tr>   
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %}

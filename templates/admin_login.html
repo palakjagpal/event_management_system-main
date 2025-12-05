@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 420px; margin-top: 60px;">
+    <div class="form">
+        <h2 style="text-align:center; color: var(--primary); margin-bottom: 16px;">Admin Login</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('admin_login') }}">
+            <label for="username">Email</label>
+            <input type="text" id="email" name="email" placeholder="example@email.com" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="********" maxlength="8" required>
+
+            <button type="submit" class="btn" style="width:100%; margin-top:16px;">LOGIN</button>
+        </form>
+
+        <div style="text-align:center; margin-top: 20px;">
+            <a href="{{ url_for('home') }}" class="btn">← Back to Home</a>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br><br>
+<br>
+{% endblock %}

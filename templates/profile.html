@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="card profile-card">
+        
+        <!-- Profile Header (Visible) -->
+        <div class="profile-header">
+            <div class="avatar-circle">{{ user.name[0] | upper }}</div>
+            <div class="header-text">
+                <h3>{{ user.name }}</h3>
+                <p>{{ user.email }}</p>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <hr class="divider" style="margin:25px 0;">
+
+        <!-- ====================== USER STATS ======================= -->
+        <div class="card stats-card">
+            <h4 class="section-title">Your Stats</h4>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h3>{{ total_bookings }}</h3>
+                    <p>Total Bookings</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>{{ paid_bookings }}</h3>
+                    <p>Paid Bookings</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>{{ upcoming }}</h3>
+                    <p>Upcoming Events</p>
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider" style="margin:25px 0;">
+
+        <!-- ====================== ACTIVITY LOG ======================= -->
+        <div class="card activity-card">
+            <h4 class="section-title">Recent Activity</h4>
+
+            {% if activity_log %}
+                <ul class="activity-list">
+                    {% for booking in activity_log %}
+                        <li class="activity-item">
+                            <strong>{{ booking.event.name }}</strong>  
+                            <span style="float:right; color:#777;">
+                                {{ booking.created_at.strftime("%Y-%m-%d %H:%M") }}
+                            </span>
+                            <br>
+                            Status: <span style="color:
+                                {% if booking.status=='Approved' %}green
+                                {% elif booking.status=='Rejected' %}red
+                                {% else %}orange
+                                {% endif %}
+                            ">{{ booking.status }}</span>
+                            
+                            {% if booking.paid %}
+                                <span style="float:right; color:green;">Paid ✓</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p style="color:#777;">No recent activity.</p>
+            {% endif %}
+        </div>
+
+
+        <!-- Link to Trigger Modal -->
+        <div class="profile-actions">
+            <p style="color: #666; margin-bottom: 10px; font-size: 0.9rem;">Security Settings</p>
+            <a href="javascript:void(0)" onclick="openModal()" class="password-link">
+                Change Password <span style="float:right">➔</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal (Hidden by default) -->
+<div id="passwordModal" class="modal-overlay">
+    <div class="modal-box card">
+        <div class="modal-header">
+            <h4 class="section-title" style="margin:0;">Update Password</h4>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+        </div>
+        
+        <hr class="divider" style="margin: 15px 0;">
+
+        <form method="post" action="{{ url_for('profile') }}">
+            
+            <!-- Current Password field removed -->
+
+            <div class="input-group">
+                <label>New Password</label>
+                <input type="password" name="new_password" maxlength=8 class="styled-input" placeholder="Enter new password" required>
+                <div class="icon">🔑</div>
+            </div>
+
+            <div class="input-group">
+                <label>Confirm New Password</label>
+                <input type="password" name="confirm_password" maxlength=8 class="styled-input" placeholder="Re-enter new password" required>
+                <div class="icon">✅</div>
+            </div>
+
+            <button type="submit" class="btn save-btn">Update Password</button>
+        </form>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+    // Open the Modal
+    function openModal() {
+        document.getElementById('passwordModal').style.display = 'flex';
+    }
+
+    // Close the Modal
+    function closeModal() {
+        document.getElementById('passwordModal').style.display = 'none';
+    }
+
+    // Close if clicked outside the box
+    window.onclick = function(event) {
+        var modal = document.getElementById('passwordModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+<style>
+    /* --- Main Layout --- */
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
+        cursor:pointer;
+    }
+
+    .profile-card {
+        max-width: 400px;
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        padding: 30px;
+    }
+
+    /* --- Profile Header --- */
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+    .avatar-circle {
+        width: 60px;
+        height: 60px;
+        background: var(--primary);
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .header-text h3 { margin: 0; color: var(--text-dark); font-size: 1.3rem; }
+    .header-text p { margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem; }
+
+    .divider { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+
+    /* --- Password Link Styling --- */
+    .password-link {
+        display: block;
+        padding: 15px;
+        background: #f8f9fa;
+        color: var(--primary);
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        border: 1px solid #eee;
+        transition: 0.2s;
+    }
+    .password-link:hover {
+        background: #fff;
+        border-color: var(--primary);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* --- Modal Styles --- */
+    .modal-overlay {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5); /* Black with opacity */
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s;
+        overflow-y:hidden;
+    }
+
+    .modal-box {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 450px;
+        position: relative;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        animation: slideUp 0.3s;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        overflow-y:hidden;
+    }
+
+    .close-btn {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 20px;
+    }
+    .close-btn:hover { color: #000; }
+
+    /* --- Form Styles (Reused) --- */
+    .section-title { color: var(--primary); font-weight: 600; }
+
+    .input-group { margin-bottom: 15px; position: relative; overflow-y:hidden; }
+    .input-group label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 6px; font-weight: 600; }
+    
+    .styled-input {
+        width: 100%;
+        padding: 10px 35px 10px 12px;
+        font-size: 0.95rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: #fafafa;
+        box-sizing: border-box;
+    }
+    .styled-input:focus {
+        border-color: var(--primary);
+        background: #fff;
+        outline: none;
+    }
+    .input-group .icon {
+        position: absolute;
+        right: 10px;
+        top: 32px;
+        font-size: 1rem;
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .save-btn {
+        width: 100%;
+        margin-top: 10px;
+        padding: 12px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    /* Animations */
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+        .stats-card, .activity-card {
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .stats-grid {
+        display: flex;
+        gap: 15px;
+    }
+
+    .stat-box {
+        flex: 1;
+        padding: 15px;
+        text-align: center;
+        background: #f6f6f6;
+        border-radius: 10px;
+    }
+
+    .stat-box:hover{
+        background:#E5E4E2;
+    }
+
+    .stat-box h3 {
+        margin: 0;
+        font-size: 1.7rem;
+        color: #5b2c6f;
+    }
+
+    .activity-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .activity-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .activity-item:hover{
+        background:#E5E4E2;
+    }
+
+    /* ================= RESPONSIVE FIXES ================= */
+
+    /* Tablet (<= 768px) */
+    @media (max-width: 768px) {
+
+        .stats-grid {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-box h3 {
+            font-size: 1.4rem;
+        }
+
+        .stat-box p {
+            font-size: 0.9rem;
+        }
+
+        .activity-item {
+            font-size: 0.9rem;
+            display:block;
+        }
+
+        .activity-item span {
+            float: right !important;
+        }
+    }
+
+    /* Mobile (<= 480px) */
+    @media (max-width: 480px) {
+
+        .stats-card, .activity-card {
+            padding: 15px;
+            width:90%;
+        }
+
+        .stat-box {
+            padding: 12px;
+        }
+
+        .stat-box h3 {
+            font-size: 1.3rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+        }
+
+            .activity-item {
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .activity-item strong {
+            font-size: 0.95rem;
+        }
+
+        .activity-item span {
+            float: right !important;   /* timestamp & paid badge stay on right */
+            margin-top: 0 !important;  /* prevent stacking */
+            display: inline !important;
+            text-align: right;
+            font-size: 0.85rem;
+        }
+    }
+
+
+</style>
+{% endblock %}

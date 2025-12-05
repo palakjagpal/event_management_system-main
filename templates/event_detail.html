@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="event-detail-card">
+    <h2>{{ event.name }}</h2>
+    
+    <div class="event-detail-content">
+        <p class="highlight"> <strong>Category:</strong> <span>{{ event.category }}</span>
+        </p>
+        <p>
+            <strong>Days:</strong> {{ event.available_days or 'N/A' }}
+        </p>
+        <p>
+            <strong>Venues:</strong> {{ event.available_venues or 'TBA' }}
+        </p>
+
+        <h3>Dates available:</h3>
+        
+        <ul>
+            {% for venue, dates in available_dates.items() %}
+                <li>
+                    <strong>{{ venue }}:</strong> 
+                    <span>{{ dates|join(', ') }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <p class="event-price">
+        Price: ₹{{ '%.2f'|format(event.price) }}
+    </p>
+
+    <div class="event-actions">
+        {% if current_user.is_authenticated %}
+              <a class="btn" href="{{ url_for('book_event', event_id=event.id) }}">Book this Event</a>
+        {% else %}
+              <a class="btn" href="{{ url_for('login') }}">Login to Book</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

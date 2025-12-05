@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}Stats & Activity Log{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        background: #f4f6f9;
+    }
+
+    /* ===== Stats Section ===== */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .stat-card h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #555;
+    }
+
+    .stat-value {
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: 10px;
+        color: #333;
+    }
+
+    /* ===== Activity Log ===== */
+    .activity-log {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .activity-log h2 {
+        margin-bottom: 10px;
+        font-size: 22px;
+        color: #333;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .icon {
+        font-size: 26px;
+    }
+
+    .activity-text {
+        margin: 0;
+        font-size: 16px;
+        color: #444;
+    }
+
+    .time {
+        margin: 3px 0 0;
+        font-size: 14px;
+        color: #888;
+    }
+
+    .view-timeline {
+        margin-bottom: 12px;
+    }
+
+    @media (max-width: 500px) {
+        .activity-item {
+            gap: 10px;
+        }
+        .icon {
+            font-size: 22px;
+        }
+        .activity-text {
+            font-size: 15px;
+        }
+    }
+</style>
+
+<h2>Stats and Activity</h2>
+<hr>
+
+<!-- ======= STATS SECTION ======= -->
+<div class="stats-container">
+
+    <div class="stat-card">
+        <h3>Total Users</h3>
+        <p class="stat-value">{{ total_users }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Active Today</h3>
+        <p class="stat-value">{{ active_today }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>New Signups</h3>
+        <p class="stat-value">{{ new_signups }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Revenue</h3>
+        <p class="stat-value">₹{{ total_revenue }}</p>
+    </div>
+
+</div>
+
+<!-- ======= ACTIVITY LOG ======= -->
+<div class="activity-log">
+    <h2>Recent Activity</h2>
+
+    <p class="view-timeline"><a class="btn" href="{{ url_for('admin_activity') }}">View Full Activity Timeline</a></p>
+
+    {% if activity %}
+        {% for item in activity %}
+        <div class="activity-item">
+            <span class="icon">{{ item.icon }}</span>
+            <div>
+                <p class="activity-text">{{ item.text | safe }}</p>
+                <p class="time">{{ item.time }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color:#666">No recent activity yet.</p>
+    {% endif %}
+
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %}
+
+<script>
+(function(){
+  const updateStats = async () => {
+    try {
+      const res = await fetch('/api/stats', { credentials: 'same-origin' });
+      if (!res.ok) return;
+      const data = await res.json();
+
+      // Update stat value elements (order matches your template)
+      const statEls = document.querySelectorAll('.stat-value');
+      if (statEls.length >= 4) {
+        statEls[0].textContent = data.total_users;
+        statEls[1].textContent = data.active_today;
+        statEls[2].textContent = data.new_signups;
+        statEls[3].textContent = '₹' + data.total_revenue;
+      }
+
+      // Update activity list
+      const activityContainer = document.querySelector('.activity-log');
+      if (activityContainer) {
+        const heading = activityContainer.querySelector('h2');
+        let html = heading ? heading.outerHTML : '<h2>Recent Activity</h2>';
+        html += '<p class="view-timeline"><a class="btn" href="/admin/activity">View Full Activity Timeline</a></p>';
+        if (data.activity && data.activity.length) {
+          data.activity.forEach(it => {
+            html += `
+              <div class="activity-item">
+                <span class="icon">${it.icon}</span>
+                <div>
+                  <p class="activity-text">${it.text}</p>
+                  <p class="time">${it.time}</p>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          html += '<p style="color:#666">No recent activity yet.</p>';
+        }
+        activityContainer.innerHTML = html;
+      }
+    } catch (e) {
+      console.error('Failed to update stats', e);
+    }
+  };
+
+  // initial load
+  updateStats();
+  // refresh every 30s
+  setInterval(updateStats, 30000);
+})();
+</script>

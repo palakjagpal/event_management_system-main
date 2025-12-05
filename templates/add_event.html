@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Add New Event</h2>
+
+<form method="post" class="form" id="event-form">
+    
+    {{ form.hidden_tag() }}
+
+    <!-- Event Name -->
+    <label for="name">Event Name</label>
+    {{ form.name(class_="input-field") }}
+    {% for error in form.name.errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
+    <!-- Category -->
+    <label for="category">Category</label>
+    {{ form.category(class_="input-field") }}
+    {% for error in form.category.errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
+    <!-- Price -->
+    <label for="price">Price (INR)</label>
+    {{ form.price(class_="input-field") }}
+    {% for error in form.price.errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
+    <!-- Available Days -->
+    <label for="available_days">Available Days (comma separated)</label>
+    {{ form.available_days(class_="input-field") }}
+    {% for error in form.available_days.errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
+    <!-- Available Venues -->
+    <label for="available_venues">Available Venues (comma separated)</label>
+    {{ form.available_venues(class_="input-field") }}
+    {% for error in form.available_venues.errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
+    <!-- Available Dates -->
+    <label for="available_dates">Available Dates (JSON mapping venue → [dates])</label>
+    {{ form.available_dates(rows=6, class_="input-field") }}
+    <small>
+        Example:
+        {"Hall A": ["2025-11-12", "2025-11-18"], "Auditorium": ["2025-11-15"]}
+    </small>
+    {% for error in form.available_dates.errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
+    <!-- Buttons -->
+    <button class="btn" type="button" id="validate-json">Validate JSON</button>
+    <br>
+    {{ form.submit(class_="btn") }}
+
+</form>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %}

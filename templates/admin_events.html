@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Manage Events</h2>
+
+<form method="get" class="search-form">
+  <input type="text" name="search" placeholder="Search by event name..." value="{{ search }}">
+  <button class="btn" type="submit">Search</button>
+  <a class="btn" href="{{ url_for('admin_events') }}">Clear</a>
+</form>
+
+<p>
+  <a class="btn" href="{{ url_for('admin_add_event') }}">+ Add New Event</a>
+</p>
+
+<div class="table-responsive-wrapper">
+  <table class="table">
+    <tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Days</th><th>Venues</th><th>Actions</th></tr>
+    {% for e in events %}
+      <tr>
+        <td>{{ e.id }}</td>
+        <td>{{ e.name }}</td>
+        <td>{{ e.category }}</td>
+        <td>₹{{ '%.2f'|format(e.price) }}</td>
+        <td>{{ e.available_days }}</td>
+        <td>{{ e.available_venues }}</td>
+        <td>
+          <a class="btn" href="{{ url_for('admin_edit_event', event_id=e.id) }}">Edit</a>
+          <form method="post" action="{{ url_for('admin_delete_event', event_id=e.id) }}" style="display:inline">
+            <button class="btn" type="submit" onclick="return confirm('Delete this event?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7">No events yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+{% endblock %}

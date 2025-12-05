@@ -1,0 +1,69 @@
+# --------------------
+# Python
+# --------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+*.env
+
+# VS Code / IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Flask / Instance folders
+instance/
+*.pid
+
+# SQLite database file
+database.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Uploaded / Generated Files
+uploads/
+media/
+static/uploads/
+*.pdf
+
+# Cache / Build
+.cache/
+dist/
+build/
+
+# Byte-compiled files
+*.egg-info/
+.eggs/
+
+# Reports
+reports/
+
+# Environment config backups
+config.json
+*.bak
+
+# Test coverage
+htmlcov/
+.coverage
+.cache/
+.pytest_cache/
+
+# Temporary files
+tmp/
+temp/

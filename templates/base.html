@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prestige Planners</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rochester&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <nav class="nav">
+      <div class="nav-left">
+          <a href="{{ url_for('home') }}" class="brand">
+              <i class="fas fa-gem"></i>
+              Prestige Planners
+          </a>
+      </div>
+
+      <button class="nav-toggle" id="navToggle">
+          <i class="fas fa-bars"></i>
+      </button>
+
+      <div class="nav-links" id="navLinks">
+          <div class="nav-right">
+
+              {% if current_user.is_authenticated %}
+                  <span class="nav-user">
+                      <i class="fas fa-user-circle"></i> Hello, {{ current_user.name }}
+                  </span>
+
+                  <a href="{{ url_for('user_dashboard') }}">
+                      <i class="fas fa-home"></i> Dashboard
+                  </a>
+
+                  {% if current_user.is_admin %}
+                      <a href="{{ url_for('admin_dashboard') }}">
+                          <i class="fas fa-user-shield"></i> Admin
+                      </a>
+                  {% endif %}
+
+                  <a href="{{ url_for('logout') }}">
+                      <i class="fas fa-sign-out-alt"></i> Logout
+                  </a>
+
+              {% else %}
+
+                  <a href="{{ url_for('login') }}">
+                      <i class="fas fa-sign-in-alt"></i> Login
+                  </a>
+
+                  <a href="{{ url_for('register') }}">
+                      <i class="fas fa-user-plus"></i> Register
+                  </a>
+
+                  <a href="{{ url_for('admin_login') }}">
+                      <i class="fas fa-user-shield"></i> Admin
+                  </a>
+
+              {% endif %}
+          </div>
+      </div>
+  </nav>
+
+
+
+  <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+  </div>
+
+
+  <footer>
+      <div class="footer-content">
+          <p>© {{ current_year if current_year else "2025" }} Prestige Planners. All Rights Reserved.</p>
+
+          <div class="footer-links">
+              <a href="{{ url_for('home') }}">Home</a>
+              {% if current_user.is_authenticated %}
+                  <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+              {% else %}
+                  <a href="{{ url_for('login') }}">Login</a>
+                  <a href="{{ url_for('register') }}">Register</a>
+              {% endif %}
+          </div>
+
+          <div class="footer-social">
+              <i class="fab fa-facebook"></i>
+              <i class="fab fa-instagram"></i>
+              <i class="fab fa-twitter"></i>
+          </div>
+      </div>
+  </footer>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const navToggle = document.getElementById('navToggle');
+      const navLinks = document.getElementById('navLinks');
+
+      if (navToggle && navLinks) {
+          navToggle.addEventListener('click', function() {
+              // Toggles the 'active' class on the navigation links container
+              navLinks.classList.toggle('active');
+          });
+
+          // OPTIONAL: Close the menu if a link is clicked
+          navLinks.querySelectorAll('a').forEach(link => {
+              link.addEventListener('click', function() {
+                  if (window.innerWidth <= 768) {
+                      navLinks.classList.remove('active');
+                  }
+              });
+          });
+      }
+  });
+  </script>
+
+</body>
+</html>

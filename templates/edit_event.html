@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Edit Event</h2>
+<form method="post" class="form" id="event-form">
+    {{ form.hidden_tag() }}
+
+    <label>Event Name</label>
+    {{ form.name() }}
+    {% for error in form.name.errors %}<p class="error">{{ error }}</p>{% endfor %}
+
+    <label>Category</label>
+    {{ form.category() }}
+    {% for error in form.category.errors %}<p class="error">{{ error }}</p>{% endfor %}
+
+    <label>Price (INR)</label>
+    {{ form.price() }}
+    {% for error in form.price.errors %}<p class="error">{{ error }}</p>{% endfor %}
+
+    <label>Available Days (comma separated)</label>
+    {{ form.available_days() }}
+    {% for error in form.available_days.errors %}<p class="error">{{ error }}</p>{% endfor %}
+
+    <label>Available Venues (comma separated)</label>
+    {{ form.available_venues() }}
+    {% for error in form.available_venues.errors %}<p class="error">{{ error }}</p>{% endfor %}
+
+    <label>Available Dates (JSON format)</label>
+    {{ form.available_dates() }}
+    {% for error in form.available_dates.errors %}<p class="error">{{ error }}</p>{% endfor %}
+
+    <br>
+    <button type="submit" class="btn">Update Event</button>
+
+</form>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %} 
+

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Book: {{ event.name }}</h2>
+<form method="post" class="form" id="booking-form">
+  <label>Venue</label>
+  <select name="venue" id="venue-select" required>
+    <option value="">Select venue</option>
+    {% for v in venues %}
+      <option value="{{ v }}">{{ v }}</option>
+    {% endfor %}
+  </select>
+  <label>Date</label>
+  <select name="date" id="date-select" required>
+    <option value="">Select date</option>
+  </select>
+  <p>Price: ₹{{ '%.2f'|format(event.price) }}</p>
+  <button class="btn" type="submit">Create Booking</button>
+</form>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>window.EVENT_AVAILABLE_DATES = {{ available_dates|tojson }};</script>
+{% endblock %}
